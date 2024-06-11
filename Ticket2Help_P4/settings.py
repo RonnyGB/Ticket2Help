@@ -83,7 +83,21 @@ DATABASES = {
         'PORT': '3306',
     }
 }
+#TESTAR BASE DADOS
 
+#from django.db import connections
+#from django.db.utils import OperationalError
+
+# Obtenha a conexão padrão
+#db_conn = connections['default']
+
+#try:
+    # Tente abrir um cursor para verificar a conexão
+#    db_conn.cursor()
+#   print("Conexão com o banco de dados estabelecida com sucesso!")
+#except OperationalError:
+    # Caso haja uma falha na conexão
+ #   print("Falha ao conectar ao banco de dados.")
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
