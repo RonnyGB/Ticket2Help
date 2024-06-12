@@ -84,11 +84,17 @@ class Ticket:
 class HardwareTicket(Ticket):
     def __init__(self, ):
         super().__init__()
+        self._idHard = uuid.uuid4()
         self.Equipamento = None
         self.Avaria = None
         self.DescRep = None
         self.Pecas = None
         self.Tipo = "Hardware"
+
+
+    @property
+    def idHard(self):
+        return self._idHard
 
     @property
     def Equipamento(self):
@@ -133,10 +139,15 @@ class HardwareTicket(Ticket):
 class SoftwareTicket(Ticket):
     def __init__(self, ):
         super().__init__()
+        self._idSoft = uuid.uuid4()
         self.Software = None
         self.DescNecessidade = None
         self.DescInt = None
         self.Tipo = "Software"
+
+    @property
+    def idSoft(self):
+        return self._idSoft
 
     @property
     def Software(self):
