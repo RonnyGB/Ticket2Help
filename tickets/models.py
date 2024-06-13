@@ -1,4 +1,6 @@
 from datetime import datetime
+from django.db import models
+from django.contrib.auth.models import User
 import uuid
 
 
@@ -178,3 +180,17 @@ class SoftwareTicket(Ticket):
             f"\nSoftware: {self.Software}\n" \
             f"Descricao da Necessidade: {self.DescNecessidade}\n" \
             f"Descrição de Intervençãp: {self.DescInt}"
+
+
+# class UserProfile(models.Model):
+#     # Modelo para o perfil de utilizador
+#     NIVEL_AUTORIZACAO = [
+#         (1, 'Cliente'),
+#         (2, 'Técnico'),
+#     ]
+#
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     autorizacao = models.IntegerField(choices=NIVEL_AUTORIZACAO, default=1)
+#
+#     def __str__(self):
+#         return self.user.username

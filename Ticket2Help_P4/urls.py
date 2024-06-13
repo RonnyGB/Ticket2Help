@@ -17,9 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from tickets.views import index
+from tickets.views import list_tickets
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('index/', index, name='index'),
+    path('', index, name='home'),
+    path('myapp/list_tickets', list_tickets, name='list_tickets')
 ]
 
