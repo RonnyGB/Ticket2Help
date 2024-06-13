@@ -8,6 +8,6 @@ def index(request):
     return render(request, 'tickets/index.html')
 
 
-def list_tickets(request):
-    tickets = get_tickets(request)
-    return render(request, 'myapp/list_tickets.html', {'tickets': tickets})
+def list_tickets(request, tipo=0):
+    tickets = get_tickets(op=tipo)
+    return render(request, 'myapp/list_tickets.js', {'tickets': tickets})

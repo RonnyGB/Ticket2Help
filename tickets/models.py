@@ -20,9 +20,17 @@ class Ticket:
     def id(self):
         return self._id
 
+    @id.setter
+    def id(self, value):
+        self._id = value
+
     @property
     def dtCriacao(self):
         return self._dtCriacao
+
+    @dtCriacao.setter
+    def dtCriacao(self, value):
+        self._dtCriacao = value
 
     @property
     def idColaborador(self):
@@ -92,11 +100,16 @@ class HardwareTicket(Ticket):
         self.DescRep = None
         self.Pecas = None
         self.Tipo = "Hardware"
+        self.ticketID = self.id
 
 
     @property
     def idHard(self):
         return self._idHard
+
+    @idHard.setter
+    def idHard(self, value):
+        self._idHard = value
 
     @property
     def Equipamento(self):
@@ -146,11 +159,15 @@ class SoftwareTicket(Ticket):
         self.DescNecessidade = None
         self.DescInt = None
         self.Tipo = "Software"
+        self.ticketID = self.id
 
     @property
     def idSoft(self):
         return self._idSoft
 
+    @idSoft.setter
+    def idSoft(self, value):
+        self._idSoft = value
     @property
     def Software(self):
         return self._software
