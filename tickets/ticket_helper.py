@@ -8,7 +8,7 @@ def get_db_connection():
     return pymysql.connect(
         host="127.0.0.1",
         user="root",
-        passwd="377024",
+        passwd="rrac2gbtb",
         db="ticketsdb"
     )
 
@@ -27,14 +27,13 @@ def create_ticket(ticket):
         str(ticket.id), ticket.dtCriacao, ticket.dtUltimaAlt, ticket.ColaboradorAlt, ticket.idColaborador,
         ticket.estTicket, ticket.estAtendimento, ticket.Tipo))
 
-
     if isinstance(ticket, HardwareTicket):
         query = """
             INSERT INTO hardwaretickets (id, equipamento, avaria, descRep, pecas, ticketID)
             VALUES (%s, %s, %s, %s, %s, %s)
             """
         cursor.execute(query, (
-            str(ticket.idHard), ticket.Equipamento, ticket.Avaria, ticket.DescRep, ticket.Pecas,  str(ticket.id)))
+            str(ticket.idHard), ticket.Equipamento, ticket.Avaria, ticket.DescRep, ticket.Pecas, str(ticket.id)))
 
     elif isinstance(ticket, SoftwareTicket):
         query = """
@@ -42,7 +41,7 @@ def create_ticket(ticket):
             VALUES (%s, %s, %s, %s)
             """
         cursor.execute(query, (
-            str(ticket.idSoft), ticket.Software, ticket.DescNecessidade,  str(ticket.id)))
+            str(ticket.idSoft), ticket.Software, ticket.DescNecessidade, str(ticket.id)))
     else:
         raise ValueError("Tipo de ticket não suportado")
 
