@@ -26,6 +26,7 @@ from tickets.views import new_ticket
 from tickets.views import ticket_details
 from tickets.views import manage_tickets
 from tickets.views import edit_ticket
+from tickets.views import tickets_atendidos_por_data
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -40,5 +41,6 @@ urlpatterns = [
     path('accounts/register/', register, name='register'),
     path('accounts/login/', login_view, name='login'),
     path('accounts/logout/', logout_view, name='logout'),
+    path('home/technic/gen_report', tickets_atendidos_por_data, name='tickets_atendidos_por_data')
 ]
 

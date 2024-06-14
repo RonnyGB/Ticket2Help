@@ -3,11 +3,17 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Count
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .ticket_helper import *
 from .forms import RegisterForm, HardwareTicketForm, SoftwareTicketForm, HardwareTicketEditForm, SoftwareTicketEditForm
 from django.http import Http404
+from .forms import RegisterForm, HardwareTicketForm, SoftwareTicketForm, TicketForm
+import matplotlib.pyplot as plt
+from io import BytesIO
+import base64
+from .models import Ticket
 
 
 def index(request):
@@ -193,3 +199,44 @@ def home(request):
         return render(request, 'home/technic.html')
     else:
         return render(request, 'home/client.html')
+
+
+def tickets_atendidos_por_data(request):
+    # Exemplo de intervalo de datas (substitua com seus dados reais)
+    data_inicio = '2024-01-01'
+    data_fim = '2024-06-30'
+
+    # Consulta para obter o número de tickets atendidos no intervalo de datas
+    tickets_atendidos = Ticket.objects.filter(
+        dtCriacao__range=[data_inicio, data_fim],
+        estAtendimento='Atendido'
+    ).count()
+
+    # Consulta para obter o número total de tickets no intervalo de datas
+    total_tickets = Ticket.objects.filter(
+        dtCriacao__range=[data_inicio, data_fim]
+    ).count()
+
+    # Calcular percentual de tickets atendidos
+    if total_tickets > 0:
+        percentual_atendidos = (tickets_atendidos / total_tickets) * 100
+    else:
+        percentual_atendidos = 0
+
+    # Criar gráfico de pizza
+    labels = ['Atendidos', 'Não Atendidos']
+    sizes = [percentual_atendidos, 100 - percentual_atendidos]
+
+    fig, ax = plt.subplots()
+    ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
+    ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+
+    # Salvar gráfico como imagem base64 para exibir na template
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    grafico_data = base64.b64encode(buffer.getvalue()).decode()
+    plt.close()
+
+    context = {'grafico_data': grafico_data}
+    return render(request, 'home/technic/gen_report.html', context)
