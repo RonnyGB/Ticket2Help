@@ -8,40 +8,30 @@ def get_db_connection():
     return pymysql.connect(
         host="127.0.0.1",
         user="root",
-        passwd="rrac2gbtb",
+        passwd="377024",
         db="TicketsDB"
     )
 
 
-def create_ticket(ticket):
+def create_ticket(tipo, id, *args):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Inserir dados na tabela Tickets (comuns a todos os tipos de tickets)
-    query = """
-         INSERT INTO tickets_ticket (id, dtCriacao, dtUltimaAlt, colaboradorAlt ,idColaborador_id, estTicket, 
-         estAtendimento, tipo)
-         VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-         """
-    cursor.execute(query, (
-        str(ticket.id), ticket.dtCriacao, ticket.dtUltimaAlt, ticket.colaboradorAlt, ticket.idColaborador,
-        ticket.estTicket, ticket.estAtendimento, ticket.tipo))
-
-    if isinstance(ticket, HardwareTicket):
+    if tipo == "Hardware":
         query = """
-            INSERT INTO tickets_hardwareticket (id, equipamento, avaria, descRep, pecas)
-            VALUES (%s, %s, %s, %s, %s)
-            """
-        cursor.execute(query, (
-            str(ticket.id), ticket.equipamento, ticket.avaria, ticket.descRep, ticket.pecas))
-
-    elif isinstance(ticket, SoftwareTicket):
-        query = """
-            INSERT INTO tickets_softwareticket (id, software, descNecessidade, descInt)
+            INSERT INTO tickets_hardwareticket (ticket_ptr_id, equipamento, avaria)
             VALUES (%s, %s, %s)
             """
         cursor.execute(query, (
-            str(ticket.id), ticket.software, ticket.descNecessidade, str(ticket.id)))
+            id, args[0], args[1]))
+
+    elif tipo == "Software":
+        query = """
+            INSERT INTO tickets_softwareticket (ticket_ptr_id, software, descNecessidade)
+            VALUES (%s, %s, %s)
+            """
+        cursor.execute(query, (
+             id, args[0], args[1]))
     else:
         raise ValueError("Tipo de ticket não suportado")
 

@@ -23,6 +23,7 @@ class Ticket(models.Model):
     estTicket = models.CharField(max_length=50, default="porAtender", choices=ESTTICKET_OPT)
     estAtendimento = models.CharField(max_length=50, choices=ESTATENDIMENTO_OPT, null=True, blank=True,)
     tipo = models.CharField(max_length=50, null=True, blank=True)
+    idColaborador = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f'{self.tipo} Ticket {self.id}'
