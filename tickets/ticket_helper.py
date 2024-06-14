@@ -3,8 +3,10 @@ import pymysql
 from datetime import datetime
 import uuid
 
-
 def get_db_connection():
+    """
+    Estabelece uma conexão com o banco de dados MySQL.
+    """
     return pymysql.connect(
         host="127.0.0.1",
         user="root",
@@ -12,8 +14,15 @@ def get_db_connection():
         db="TicketsDB"
     )
 
-
 def create_ticket(tipo, id, *args):
+    """
+    Cria um novo ticket no banco de dados.
+    
+    Args:
+        tipo (str): Tipo do ticket (Hardware ou Software).
+        id (str): ID do ticket.
+        *args: Argumentos adicionais necessários para a criação do ticket.
+    """
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -22,16 +31,14 @@ def create_ticket(tipo, id, *args):
             INSERT INTO tickets_hardwareticket (ticket_ptr_id, equipamento, avaria)
             VALUES (%s, %s, %s)
             """
-        cursor.execute(query, (
-            id, args[0], args[1]))
+        cursor.execute(query, (id, args[0], args[1]))
 
     elif tipo == "Software":
         query = """
             INSERT INTO tickets_softwareticket (ticket_ptr_id, software, descNecessidade)
             VALUES (%s, %s, %s)
             """
-        cursor.execute(query, (
-             id, args[0], args[1]))
+        cursor.execute(query, (id, args[0], args[1]))
     else:
         raise ValueError("Tipo de ticket não suportado")
 
@@ -39,16 +46,23 @@ def create_ticket(tipo, id, *args):
     cursor.close()
     conn.close()
 
-
 def detailObj(ticket_rows):
+    """
+    Converte os dados das linhas de tickets em objetos de tickets detalhados.
+    
+    Args:
+        ticket_rows (list): Linhas de tickets.
+    
+    Returns:
+        list: Lista de objetos de tickets detalhados.
+    """
     conn = get_db_connection()
     cursor = conn.cursor()
-
     tickets = []
+
     for ticket_row in ticket_rows:
         id, dtCriacao, dtUltimaAlt, colaboradorAlt, estTicket, estAtendimento, tipo, idColaborador = ticket_row
         if tipo == 'Hardware':
-            # Consulta para buscar detalhes de hardware
             query2 = """
                 SELECT equipamento, avaria, descRep, pecas
                 FROM tickets_hardwareticket
@@ -75,7 +89,6 @@ def detailObj(ticket_rows):
                 tickets.append(ticket)
 
         elif tipo == 'Software':
-            # Consulta para buscar detalhes de software
             query2 = """
                 SELECT software, descNecessidade, descInt
                 FROM tickets_softwareticket
@@ -85,7 +98,6 @@ def detailObj(ticket_rows):
             software_row = cursor.fetchone()
 
             if software_row:
-                print(3)
                 software, descNecessidade, descInt = software_row
                 ticket = SoftwareTicket()
                 ticket.id = id
@@ -102,30 +114,34 @@ def detailObj(ticket_rows):
                 tickets.append(ticket)
 
         else:
-            # Se o tipo não for reconhecido, criar um objeto Ticket genérico
             ticket = Ticket()
             ticket.dtCriacao = dtCriacao.strftime('%Y-%m-%d %H:%M:%S') if dtCriacao else None
             ticket.dtUltimaAlt = dtUltimaAlt.strftime('%Y-%m-%d %H:%M:%S') if dtUltimaAlt else None
             tickets.append(ticket)
-    print("----------------------------------------------------------\n")
-    print(tickets)
+    
     cursor.close()
     conn.close()
 
     return tickets
 
-
-# Função para listar tickets com filtros
 def get_tickets(op):
+    """
+    Lista os tickets com base na opção de filtro.
+    
+    Args:
+        op (int): Opção de filtro (1 para Hardware, 2 para Software, 0 para todos).
+    
+    Returns:
+        list: Lista de tickets filtrados.
+    """
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Primeira consulta para buscar todos os tickets
     query1 = """
         SELECT id, dtCriacao, dtUltimaAlt, colaboradorAlt, estTicket, estAtendimento, 
-         tipo, idColaborador_id
+        tipo, idColaborador_id
         FROM tickets_ticket
-        """
+    """
 
     cursor.execute(query1)
     ticket_rows = cursor.fetchall()
@@ -135,19 +151,20 @@ def get_tickets(op):
 
     lstTicket_filter = detailObj(ticket_rows)
 
-    # Filtrar conforme a opção
     if op == 1:
-        # Filtrar apenas os tickets de hardware
         lstTicket_filter = [ticket for ticket in lstTicket_filter if isinstance(ticket, HardwareTicket)]
     elif op == 2:
-        # Filtrar apenas os tickets de software
         lstTicket_filter = [ticket for ticket in lstTicket_filter if isinstance(ticket, SoftwareTicket)]
 
     return lstTicket_filter
 
-
-# Função para atualizar um ticket
 def update_ticket(ticket):
+    """
+    Atualiza um ticket no banco de dados.
+    
+    Args:
+        ticket (dict): Dados do ticket a ser atualizado.
+    """
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -186,28 +203,33 @@ def update_ticket(ticket):
     cursor.close()
     conn.close()
 
-
 def listToObj(lst):
+    """
+    Converte uma lista de dados em um objeto Ticket.
+    
+    Args:
+        lst (dict): Dados do ticket em formato de lista.
+    
+    Returns:
+        object: Objeto Ticket correspondente aos dados fornecidos.
+    """
+    if lst['tipo'] == 'Hardware':
+        ticket = HardwareTicket()
+        ticket.id = lst['id']
+        ticket.dtCriacao = lst['dtCriacao']
+        ticket.dtUltimaAlt = lst['dtUltimaAlt']
+        ticket.idColaborador = lst['idColaborador']
+        ticket.ColaboradorAlt = lst['ColaboradorAlt']
+        ticket.estTicket = lst['estTicket']
+        ticket.estAtendimento = lst['estAtendimento']
+        ticket.tipo = lst['Tipo']
+        ticket.equipamento = lst['Equipamento']
+        ticket.avaria = lst['Avaria']
+        ticket.descRep = lst['DescRep']
+        ticket.pecas = lst['Pecas']
+        return ticket
 
-   if lst['tipo'] == 'Hardware':
-
-       ticket = HardwareTicket()
-       ticket.id = lst['id']
-       ticket.dtCriacao = lst['dtCriacao']
-       ticket.dtUltimaAlt = lst['dtUltimaAlt']
-       ticket.idColaborador = lst['idColaborador']
-       ticket.ColaboradorAlt = lst['ColaboradorAlt']
-       ticket.estTicket = lst['estTicket']
-       ticket.estAtendimento = lst['estAtendimento']
-       ticket.tipo = lst['Tipo']
-       ticket.equipamento = lst['Equipamento']
-       ticket.avaria = lst['Avaria']
-       ticket.descRep = lst['DescRep']
-       ticket.pecas = lst['Pecas']
-       return ticket
-
-   elif lst['tipo'] == 'Software':
-
+    elif lst['tipo'] == 'Software':
         ticket = SoftwareTicket()
         ticket.id = lst['id']
         ticket.dtCriacao = lst['dtCriacao']
@@ -221,8 +243,3 @@ def listToObj(lst):
         ticket.descNecessidade = lst['DescNecessidade']
         ticket.descInt = lst['DescInt']
         return ticket
-
-
-
-
-
