@@ -12,8 +12,10 @@ def index(request):
     return render(request, 'tickets/index.html')
 
 
-def list_tickets(request, tipo=0):
-    tickets = get_tickets(op=tipo)
+# def list_tickets(request, tipo=0):
+#     tickets = get_tickets(op=tipo)
+def list_tickets(request):
+    tickets = get_tickets
     user = request.user
     if user.is_staff or user.has_perm('app_name.permission_codename'):
         return render(request, 'home/technic/list_tickets.html', {'tickets': tickets})
