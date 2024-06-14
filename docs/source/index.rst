@@ -7,6 +7,8 @@ Welcome to Ticket2Help's documentation!
 
    intro
    usage
+   tickets
+   contributing
 
 Indices and tables
 ==================
