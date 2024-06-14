@@ -5,7 +5,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .ticket_helper import *
-from .forms import RegisterForm, HardwareTicketForm, SoftwareTicketForm, TicketForm
+from .forms import RegisterForm, HardwareTicketForm, SoftwareTicketForm
+from django.http import Http404
+
 
 
 def index(request):
@@ -14,50 +16,88 @@ def index(request):
 
 @login_required
 def new_ticket(request):
-    ticket_type = request.POST.get('ticket_type')
-
-    if ticket_type == "hardware":
-        form_class = HardwareTicketForm
-    elif ticket_type == "software":
-        form_class = SoftwareTicketForm
-    else:
-        form_class = TicketForm
-
-    if request.method == 'POST':
-        form = form_class(request.POST)
-        if form.is_valid():
-            ticket = form.save(commit=False)
-            ticket.idColaborador = request.user
-            ticket.Tipo = ticket_type  # Set ticket type based on form submission
-            ticket.save()
-            return redirect('home')
-    else:
-        form = form_class()
-
     hardware_form = HardwareTicketForm()
     software_form = SoftwareTicketForm()
-    ticket_form = TicketForm()
+    form = None
+    ticket_type = None
+
+    if request.method == 'POST':
+        if 'ticket_type' in request.POST:
+            ticket_type = request.POST['ticket_type']
+            if ticket_type == 'hardware':
+                form = HardwareTicketForm()
+            elif ticket_type == 'software':
+                form = SoftwareTicketForm()
+        else:
+            ticket_type = request.POST.get('tipo')
+            if ticket_type == 'Hardware':
+                form = HardwareTicketForm(request.POST)
+                if form.is_valid():
+                    equipamento = form.cleaned_data['equipamento']
+                    avaria = form.cleaned_data['avaria']
+                    ticket = HardwareTicket(idColaborador=request.user, estTicket='porAtender', estAtendimento='',
+                                            equipamento=equipamento, avaria=avaria, tipo=request.POST.get('tipo'))
+                    ticket.save()
+                    return redirect('home')
+            elif ticket_type == 'Software':
+                form = SoftwareTicketForm(request.POST)
+                if form.is_valid():
+                    software = form.cleaned_data['software']
+                    descNecessidade = form.cleaned_data['descNecessidade']
+                    ticket = SoftwareTicket(idColaborador=request.user, estTicket='porAtender', estAtendimento='',
+                                            software=software, descNecessidade=descNecessidade,
+                                            tipo=request.POST.get('tipo'))
+                    ticket.save()
+                    return redirect('home')
+
     return render(
         request,
         'home/client/new_ticket.html',
         {
-            'form': form,
-            'ticket_type': ticket_type,
             'hardware_form': hardware_form,
             'software_form': software_form,
-            'ticket_form': ticket_form
+            'form': form,
+            'ticket_type': ticket_type,
         }
     )
 
 
-def list_tickets(request, tipo):
-    tickets = get_tickets(op=tipo)
-    user = request.user
-    if user.is_staff or user.has_perm('app_name.permission_codename'):
-        return render(request, 'home/technic/list_tickets.html', {'tickets': tickets})
-    else:
-        return render(request, 'home/client/list_tickets.html', {'tickets': tickets})
+@login_required
+def list_tickets(request):
+    ticket_type = request.GET.get('type', 'all')
+    tickets = []
 
+    if ticket_type == 'hardware':
+        tickets = HardwareTicket.objects.all()
+    elif ticket_type == 'software':
+        tickets = SoftwareTicket.objects.all()
+    else:
+        hardware_tickets = HardwareTicket.objects.all()
+        software_tickets = SoftwareTicket.objects.all()
+        tickets = list(hardware_tickets) + list(software_tickets)
+        tickets.sort(key=lambda x: x.dtCriacao, reverse=True)  # Sort by creation date
+
+    return render(request, 'home/client/list_tickets.html', {'tickets': tickets, 'ticket_type': ticket_type})
+
+
+@login_required
+def ticket_details(request, ticket_id):
+    try:
+        ticket = HardwareTicket.objects.get(id=ticket_id)
+        ticket_type = 'hardware'
+    except HardwareTicket.DoesNotExist:
+        try:
+            ticket = SoftwareTicket.objects.get(id=ticket_id)
+            ticket_type = 'software'
+        except SoftwareTicket.DoesNotExist:
+            raise Http404("Ticket does not exist")  # or render your custom 404 page
+
+    return render(request, 'home/client/ticket_details.html', {'ticket': ticket, 'ticket_type': ticket_type})
+
+
+@login_required
+def manage_tickets(request):
+    return render(request, 'home/technic/manage_tickets.html')
 
 def register(request):
     if request.method == 'POST':

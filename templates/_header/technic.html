@@ -3,11 +3,10 @@
         <a href="{% url 'home' %}">
             <button>Home</button>
         </a>
-        <button>Button 2</button>
-        <a href="{% url 'list_tickets' %}">
-            <button>List Tickets</button>
+        <a href="{% url 'manage_tickets' %}">
+            <button>Manage Tickets</button>
         </a>
-        <button>Button 4</button>
+        <button>Generate Report</button>
         <form action="{% url 'logout' %}" method="post" style="display: inline;">
             {% csrf_token %}
             <button type="submit">Logout</button>
