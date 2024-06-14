@@ -1,7 +1,7 @@
 
 # Ticket2Help
 
-Ticket2Help é um sistema de gestão de tickets desenvolvido em Django, destinado ao gerenciamento de solicitações de hardware e software.
+Ticket2Help é um sistema de gestão de tickets desenvolvido em Django.
 
 # Funcionalidades
 
