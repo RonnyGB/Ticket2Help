@@ -40,7 +40,7 @@
                     <td>{{ ticket.estTicket }}</td>
                     <td>{{ ticket.estAtendimento }}</td>
                     <td>{{ ticket.dtUltimaAlt }}</td>
-                    <td><a href="{% url 'ticket_details' ticket.id %}">Details</a></td>
+                    <td><a href="{% url 'ticket_details_client' ticket.id %}">Details</a></td>
                 </tr>
             {% endfor %}
         </tbody>

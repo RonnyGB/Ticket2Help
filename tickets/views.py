@@ -1,13 +1,13 @@
 # views.py
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .ticket_helper import *
-from .forms import RegisterForm, HardwareTicketForm, SoftwareTicketForm
+from .forms import RegisterForm, HardwareTicketForm, SoftwareTicketForm, HardwareTicketEditForm, SoftwareTicketEditForm
 from django.http import Http404
-
 
 
 def index(request):
@@ -82,6 +82,7 @@ def list_tickets(request):
 
 @login_required
 def ticket_details(request, ticket_id):
+    user = request.user
     try:
         ticket = HardwareTicket.objects.get(id=ticket_id)
         ticket_type = 'hardware'
@@ -92,12 +93,57 @@ def ticket_details(request, ticket_id):
         except SoftwareTicket.DoesNotExist:
             raise Http404("Ticket does not exist")  # or render your custom 404 page
 
-    return render(request, 'home/client/ticket_details.html', {'ticket': ticket, 'ticket_type': ticket_type})
+    if user.is_staff or user.has_perm('app_name.permission_codename'):
+        return render(request, 'home/technic/ticket_details.html', {'ticket': ticket, 'ticket_type': ticket_type})
+    else:
+        return render(request, 'home/client/ticket_details.html', {'ticket': ticket, 'ticket_type': ticket_type})
 
 
 @login_required
 def manage_tickets(request):
-    return render(request, 'home/technic/manage_tickets.html')
+    ticket_type = request.GET.get('type', 'all')
+    if ticket_type == 'hardware':
+        tickets = HardwareTicket.objects.all()
+    elif ticket_type == 'software':
+        tickets = SoftwareTicket.objects.all()
+    else:
+        hardware_tickets = HardwareTicket.objects.all()
+        software_tickets = SoftwareTicket.objects.all()
+        tickets = list(hardware_tickets) + list(software_tickets)
+        tickets.sort(key=lambda x: x.dtCriacao, reverse=True)  # Sort by creation date
+
+    return render(request, 'home/technic/manage_tickets.html', {'tickets': tickets, 'ticket_type': ticket_type})
+
+
+@login_required
+def edit_ticket(request, ticket_id):
+    try:
+        ticket = get_object_or_404(HardwareTicket, id=ticket_id)
+        ticket_type = 'hardware'
+        form_class = HardwareTicketEditForm
+    except HardwareTicket.DoesNotExist:
+        try:
+            ticket = get_object_or_404(SoftwareTicket, id=ticket_id)
+            ticket_type = 'software'
+            form_class = SoftwareTicketEditForm
+        except SoftwareTicket.DoesNotExist:
+            return render(request, '404.html')  # or custom error handling
+
+    # Check if the ticket's estAtendimento is 'resolvido'
+    if ticket.estAtendimento == 'resolvido':
+        messages.error(request, 'You cannot edit a resolved ticket.')
+        return redirect('manage_tickets')  # or redirect to another appropriate page
+
+    if request.method == 'POST':
+        form = form_class(request.POST, instance=ticket)
+        if form.is_valid():
+            ticket.colaboradorAlt = request.user.username  # Update the colaboradorAlt field
+            form.save()
+            return redirect('manage_tickets')
+    else:
+        form = form_class(instance=ticket)
+
+    return render(request, 'home/technic/edit_ticket.html', {'form': form, 'ticket_type': ticket_type})
 
 def register(request):
     if request.method == 'POST':
