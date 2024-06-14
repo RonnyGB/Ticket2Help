@@ -17,6 +17,7 @@ def create_ticket(ticket):
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    ticket = listToObj(ticket)
     # Inserir dados na tabela Tickets (comuns a todos os tipos de tickets)
     query = """
          INSERT INTO tickets (id, dtCriacao, dtUltimaAlt, colaboradorAlt ,idColaborador, estTicket, estAtendimento, 
@@ -161,6 +162,8 @@ def update_ticket(ticket):
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    ticket = listToObj(ticket)
+
     query = """
         UPDATE Tickets SET dtUltimaAlt=%s, colaboradorAlt=%s, estTicket=%s, estAtendimento=%s
         WHERE id=%s
@@ -169,22 +172,22 @@ def update_ticket(ticket):
         datetime.now(), ticket.ColaboradorAlt, ticket.estTicket, ticket.estAtendimento, str(ticket.id)
     ))
 
-    if ticket.tipo == 'hardware':
+    if isinstance(ticket, HardwareTicket):
         query = """
             UPDATE HardwareTickets SET equipamento=%s, avaria=%s, descRep=%s, pecas=%s
-            WHERE id=%s
+            WHERE ticketID=%s
         """
         cursor.execute(query, (
-            ticket['equipamento'], ticket['avaria'], ticket['descRep'], ticket['pecas'], str(ticket['id'])
-        ))
+            ticket.Equipamento, ticket.Avaria, ticket.DescRep, ticket.Pecas, str(ticket.id))
+        )
 
-    elif ticket['tipo'] == 'software':
+    elif isinstance(ticket, SoftwareTicket):
         query = """
             UPDATE SoftwareTickets SET software=%s, descNecessidade=%s, descInt=%s
-            WHERE id=%s
+            WHERE ticketID=%s
         """
         cursor.execute(query, (
-            ticket['software'], ticket['descNecessidade'], ticket['descInt'], str(ticket['id'])
+            ticket.Software, ticket.DescNecessidade, ticket.DescInt, str(ticket.id)
         ))
 
     else:
@@ -193,3 +196,46 @@ def update_ticket(ticket):
     conn.commit()
     cursor.close()
     conn.close()
+
+
+def listToObj(lst):
+
+   if lst['tipo'] == 'hardware':
+
+       ticket = HardwareTicket()
+       ticket.id = lst['id']
+       ticket.dtCriacao = lst['dtCriacao']
+       ticket.dtUltimaAlt = lst['dtUltimaAlt']
+       ticket.idColaborador = lst['idColaborador']
+       ticket.ColaboradorAlt = lst['ColaboradorAlt']
+       ticket.estTicket = lst['estTicket']
+       ticket.estAtendimento = lst['estAtendimento']
+       ticket.Tipo = lst['Tipo']
+       ticket.idHard = lst['idHard']
+       ticket.Equipamento = lst['Equipamento']
+       ticket.Avaria = lst['Avaria']
+       ticket.DescRep = lst['DescRep']
+       ticket.Pecas = lst['Pecas']
+       return ticket
+
+   elif lst['tipo'] == 'software':
+
+        ticket = SoftwareTicket()
+        ticket.id = lst['id']
+        ticket.dtCriacao = lst['dtCriacao']
+        ticket.dtUltimaAlt = lst['dtUltimaAlt']
+        ticket.idColaborador = lst['idColaborador']
+        ticket.ColaboradorAlt = lst['ColaboradorAlt']
+        ticket.estTicket = lst['estTicket']
+        ticket.estAtendimento = lst['estAtendimento']
+        ticket.Tipo = lst['Tipo']
+        ticket.idSoft = lst['idSoft']
+        ticket.Software = lst['Software']
+        ticket.DescNecessidade = lst['DescNecessidade']
+        ticket.DescInt = lst['DescInt']
+        return ticket
+
+
+
+
+
