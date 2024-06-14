@@ -1,0 +1,13 @@
+<!-- Header para páginas de técnicos -->
+    <div class="header">
+        <a href="{% url 'home' %}">
+            <button>Home</button>
+        </a>
+        <button>Button 2</button>
+        <button>Button 3</button>
+        <button>Button 4</button>
+        <form action="{% url 'logout' %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    </div>
