@@ -26,7 +26,6 @@ from tickets.views import new_ticket
 from tickets.views import ticket_details
 from tickets.views import manage_tickets
 from tickets.views import edit_ticket
-from tickets.views import tickets_atendidos_por_data
 from tickets.views import tickets_atendidos
 from tickets.views import tickets_resolvidos
 from tickets.views import media_tempo_atendimento

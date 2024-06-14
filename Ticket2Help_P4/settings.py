@@ -74,7 +74,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'TicketsDB',
         'USER': 'root',
-        'PASSWORD': '377024',
+        'PASSWORD': 'rrac2gbtb',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
