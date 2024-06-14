@@ -14,24 +14,24 @@
     <table>
         <thead>
             <tr>
-                <th>ID</th>
+                <th>Type</th>
                 <th>Date Created</th>
                 <th>Technic ID</th>
                 <th>Ticket State</th>
                 <th>Service State</th>
-                <th>Type</th>
+                <th>Last Update</th>
                 <th>Details</th>
             </tr>
         </thead>
         <tbody>
             {% for ticket in tickets %}
                 <tr>
-                    <td>{{ ticket.0 }}</td>
-                    <td>{{ ticket.1 }}</td>
-                    <td>{{ ticket.2 }}</td>
-                    <td>{{ ticket.3 }}</td>
-                    <td>{{ ticket.4 }}</td>
-                    <td>{{ ticket.5 }}</td>
+                    <td>{{ ticket.tipo }}</td>
+                    <td>{{ ticket.dtCriacao }}</td>
+                    <td>{{ ticket.idColaborador }}</td>
+                    <td>{{ ticket.estTicket }}</td>
+                    <td>{{ ticket.estAtendimento }}</td>
+                    <td>{{ ticket.dtUltimaAlt }}</td>
                     <td><a href="#">Details</a></td>
                 </tr>
             {% endfor %}

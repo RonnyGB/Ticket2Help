@@ -23,16 +23,17 @@ from tickets.views import login_view
 from tickets.views import logout_view
 from tickets.views import home
 from tickets.views import new_ticket
+from tickets.views import tickets_atendidos_por_data
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index, name='index'),
     path('home/', home, name='home'),
-    path('home/list_tickets/', list_tickets, {'tipo': 0}, name='list_tickets_default'),
-    path('home/list_tickets/<int:tipo>/', list_tickets, name='list_tickets'),
+    path('home/list_tickets/', list_tickets, name='list_tickets'),
     path('home/client/new_ticket/', new_ticket, name='new_ticket'),
     path('accounts/register/', register, name='register'),
     path('accounts/login/', login_view, name='login'),
     path('accounts/logout/', logout_view, name='logout'),
+    path('home/technic/gen_report', tickets_atendidos_por_data, name='tickets_atendidos_por_data')
 ]
 

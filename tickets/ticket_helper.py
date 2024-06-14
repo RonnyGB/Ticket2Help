@@ -8,40 +8,30 @@ def get_db_connection():
     return pymysql.connect(
         host="127.0.0.1",
         user="root",
-        passwd="rrac2gbtb",
+        passwd="377024",
         db="TicketsDB"
     )
 
 
-def create_ticket(ticket):
+def create_ticket(tipo, id, *args):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Inserir dados na tabela Tickets (comuns a todos os tipos de tickets)
-    query = """
-         INSERT INTO tickets (id, dtCriacao, dtUltimaAlt, colaboradorAlt ,idColaborador, estTicket, estAtendimento, 
-         Tipo)
-         VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-         """
-    cursor.execute(query, (
-        str(ticket.id), ticket.dtCriacao, ticket.dtUltimaAlt, ticket.colaboradorAlt, ticket.idColaborador,
-        ticket.estTicket, ticket.estAtendimento, ticket.tipo))
-
-    if isinstance(ticket, HardwareTicket):
+    if tipo == "Hardware":
         query = """
-            INSERT INTO hardwaretickets (id, equipamento, avaria, descRep, pecas, ticketID)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            INSERT INTO tickets_hardwareticket (ticket_ptr_id, equipamento, avaria)
+            VALUES (%s, %s, %s)
             """
         cursor.execute(query, (
-            str(ticket.idHard), ticket.equipamento, ticket.avaria, ticket.descRep, ticket.pecas, str(ticket.id)))
+            id, args[0], args[1]))
 
-    elif isinstance(ticket, SoftwareTicket):
+    elif tipo == "Software":
         query = """
-            INSERT INTO softwaretickets (id, software, descNecessidade, descInt, ticketID)
-            VALUES (%s, %s, %s, %s)
+            INSERT INTO tickets_softwareticket (ticket_ptr_id, software, descNecessidade)
+            VALUES (%s, %s, %s)
             """
         cursor.execute(query, (
-            str(ticket.idSoft), ticket.software, ticket.descNecessidade, str(ticket.id)))
+             id, args[0], args[1]))
     else:
         raise ValueError("Tipo de ticket não suportado")
 
@@ -55,32 +45,29 @@ def detailObj(ticket_rows):
     cursor = conn.cursor()
 
     tickets = []
-
     for ticket_row in ticket_rows:
-        id, dtCriacao, dtUltimaAlt, colaboradorAlt, idColaborador, estTicket, estAtendimento, tipo = ticket_row
-
+        id, dtCriacao, dtUltimaAlt, colaboradorAlt, estTicket, estAtendimento, tipo, idColaborador = ticket_row
         if tipo == 'Hardware':
             # Consulta para buscar detalhes de hardware
             query2 = """
-                SELECT id, equipamento, avaria, descRep, pecas, ticketID
-                FROM HardwareTickets
-                WHERE ticketID = %s
+                SELECT equipamento, avaria, descRep, pecas
+                FROM tickets_hardwareticket
+                WHERE ticket_ptr_id = %s
             """
             cursor.execute(query2, (id,))
             hardware_row = cursor.fetchone()
 
             if hardware_row:
-                idHARD, equipamento, avaria, descRep, pecas, ticketID = hardware_row
+                equipamento, avaria, descRep, pecas = hardware_row
                 ticket = HardwareTicket()
                 ticket.id = id
-                ticket.dtCriacao = dtCriacao
-                ticket.dtUltimaAlt = dtUltimaAlt
+                ticket.dtCriacao = dtCriacao.strftime('%Y-%m-%d %H:%M:%S') if dtCriacao else None
+                ticket.dtUltimaAlt = dtUltimaAlt.strftime('%Y-%m-%d %H:%M:%S') if dtUltimaAlt else None
                 ticket.idColaborador = idColaborador
                 ticket.ColaboradorAlt = colaboradorAlt
                 ticket.estTicket = estTicket
                 ticket.estAtendimento = estAtendimento
                 ticket.Tipo = tipo
-                ticket.idHard = idHARD
                 ticket.Equipamento = equipamento
                 ticket.Avaria = avaria
                 ticket.DescRep = descRep
@@ -90,35 +77,38 @@ def detailObj(ticket_rows):
         elif tipo == 'Software':
             # Consulta para buscar detalhes de software
             query2 = """
-                SELECT id, software, descNecessidade, descInt
-                FROM SoftwareTickets
-                WHERE id = %s
+                SELECT software, descNecessidade, descInt
+                FROM tickets_softwareticket
+                WHERE ticket_ptr_id = %s
             """
             cursor.execute(query2, (id,))
             software_row = cursor.fetchone()
 
             if software_row:
-                idSOFT, software, descNecessidade, descInt = software_row
+                print(3)
+                software, descNecessidade, descInt = software_row
                 ticket = SoftwareTicket()
                 ticket.id = id
-                ticket.dtCriacao = dtCriacao
-                ticket.dtUltimaAlt = dtUltimaAlt
+                ticket.dtCriacao = dtCriacao.strftime('%Y-%m-%d %H:%M:%S') if dtCriacao else None
+                ticket.dtUltimaAlt = dtUltimaAlt.strftime('%Y-%m-%d %H:%M:%S') if dtUltimaAlt else None
                 ticket.idColaborador = idColaborador
                 ticket.ColaboradorAlt = colaboradorAlt
                 ticket.estTicket = estTicket
                 ticket.estAtendimento = estAtendimento
-                ticket.Tipo = tipo
-                ticket.idSoft = idSOFT
-                ticket.Software = software
-                ticket.DescNecessidade = descNecessidade
-                ticket.DescInt = descInt
+                ticket.tipo = tipo
+                ticket.software = software
+                ticket.descNecessidade = descNecessidade
+                ticket.descInt = descInt
                 tickets.append(ticket)
 
         else:
             # Se o tipo não for reconhecido, criar um objeto Ticket genérico
             ticket = Ticket()
+            ticket.dtCriacao = dtCriacao.strftime('%Y-%m-%d %H:%M:%S') if dtCriacao else None
+            ticket.dtUltimaAlt = dtUltimaAlt.strftime('%Y-%m-%d %H:%M:%S') if dtUltimaAlt else None
             tickets.append(ticket)
-
+    print("----------------------------------------------------------\n")
+    print(tickets)
     cursor.close()
     conn.close()
 
@@ -132,9 +122,9 @@ def get_tickets(op):
 
     # Primeira consulta para buscar todos os tickets
     query1 = """
-        SELECT id, dtCriacao, dtUltimaAlt, colaboradorAlt ,idColaborador, estTicket, estAtendimento, 
-         Tipo
-        FROM Tickets
+        SELECT id, dtCriacao, dtUltimaAlt, colaboradorAlt, estTicket, estAtendimento, 
+         tipo, idColaborador_id
+        FROM tickets_ticket
         """
 
     cursor.execute(query1)
@@ -199,7 +189,7 @@ def update_ticket(ticket):
 
 def listToObj(lst):
 
-   if lst['tipo'] == 'hardware':
+   if lst['tipo'] == 'Hardware':
 
        ticket = HardwareTicket()
        ticket.id = lst['id']
@@ -209,15 +199,14 @@ def listToObj(lst):
        ticket.ColaboradorAlt = lst['ColaboradorAlt']
        ticket.estTicket = lst['estTicket']
        ticket.estAtendimento = lst['estAtendimento']
-       ticket.Tipo = lst['Tipo']
-       ticket.idHard = lst['idHard']
-       ticket.Equipamento = lst['Equipamento']
-       ticket.Avaria = lst['Avaria']
-       ticket.DescRep = lst['DescRep']
-       ticket.Pecas = lst['Pecas']
+       ticket.tipo = lst['Tipo']
+       ticket.equipamento = lst['Equipamento']
+       ticket.avaria = lst['Avaria']
+       ticket.descRep = lst['DescRep']
+       ticket.pecas = lst['Pecas']
        return ticket
 
-   elif lst['tipo'] == 'software':
+   elif lst['tipo'] == 'Software':
 
         ticket = SoftwareTicket()
         ticket.id = lst['id']
@@ -227,11 +216,10 @@ def listToObj(lst):
         ticket.ColaboradorAlt = lst['ColaboradorAlt']
         ticket.estTicket = lst['estTicket']
         ticket.estAtendimento = lst['estAtendimento']
-        ticket.Tipo = lst['Tipo']
-        ticket.idSoft = lst['idSoft']
-        ticket.Software = lst['Software']
-        ticket.DescNecessidade = lst['DescNecessidade']
-        ticket.DescInt = lst['DescInt']
+        ticket.tipo = lst['Tipo']
+        ticket.software = lst['Software']
+        ticket.descNecessidade = lst['DescNecessidade']
+        ticket.descInt = lst['DescInt']
         return ticket
 
 

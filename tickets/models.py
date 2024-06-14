@@ -9,10 +9,10 @@ class Ticket(models.Model):
     dtCriacao = models.DateTimeField(auto_now_add=True)
     dtUltimaAlt = models.DateTimeField(auto_now=True)
     colaboradorAlt = models.CharField(max_length=100, null=True, blank=True)
-    idColaborador = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     estTicket = models.CharField(max_length=50, default="porAtender")
     estAtendimento = models.CharField(max_length=50, default="Aberto")
     tipo = models.CharField(max_length=50, null=True, blank=True)
+    idColaborador = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f'{self.tipo} Ticket {self.id}'
@@ -29,7 +29,6 @@ class Ticket(models.Model):
 
 
 class HardwareTicket(Ticket):
-    idHard = models.UUIDField(default=uuid.uuid4, editable=False)
     equipamento = models.CharField(max_length=100, null=True, blank=True)
     avaria = models.TextField(null=True, blank=True)
     descRep = models.TextField(null=True, blank=True)
@@ -47,7 +46,6 @@ class HardwareTicket(Ticket):
 
 
 class SoftwareTicket(Ticket):
-    idSoft = models.UUIDField(default=uuid.uuid4, editable=False)
     software = models.CharField(max_length=100, null=True, blank=True)
     descNecessidade = models.TextField(null=True, blank=True)
     descInt = models.TextField(null=True, blank=True)
