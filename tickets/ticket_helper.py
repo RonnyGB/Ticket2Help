@@ -10,7 +10,7 @@ def get_db_connection():
     return pymysql.connect(
         host="127.0.0.1",
         user="root",
-        passwd="377024",
+        passwd="rrac2gbtb",
         db="TicketsDB"
     )
 

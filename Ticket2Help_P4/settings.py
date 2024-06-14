@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
-"""# Constroi caminhos dentro do projeto como este: BASE_DIR / 'subdir'."""
+# Constroi caminhos dentro do projeto como este: BASE_DIR / 'subdir'
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Configurações de desenvolvimento de início rápido - não são adequadas para produção
@@ -74,7 +74,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'TicketsDB',
         'USER': 'root',
-        'PASSWORD': '377024',
+        'PASSWORD': 'rrac2gbtb',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }

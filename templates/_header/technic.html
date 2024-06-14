@@ -6,7 +6,10 @@
         <a href="{% url 'manage_tickets' %}">
             <button>Manage Tickets</button>
         </a>
-        <button>Generate Report</button>
+        <a href="{% url 'tickets_atendidos' %}">
+            <button>Generate Report</button>
+        </a>
+
         <form action="{% url 'logout' %}" method="post" style="display: inline;">
             {% csrf_token %}
             <button type="submit">Logout</button>

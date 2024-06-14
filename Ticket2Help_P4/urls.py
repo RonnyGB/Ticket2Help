@@ -26,7 +26,10 @@ from tickets.views import new_ticket
 from tickets.views import ticket_details
 from tickets.views import manage_tickets
 from tickets.views import edit_ticket
-from tickets.views import tickets_atendidos_por_data
+from tickets.views import tickets_atendidos
+from tickets.views import tickets_resolvidos
+from tickets.views import media_tempo_atendimento
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -41,6 +44,8 @@ urlpatterns = [
     path('accounts/register/', register, name='register'),
     path('accounts/login/', login_view, name='login'),
     path('accounts/logout/', logout_view, name='logout'),
-    path('home/technic/gen_report', tickets_atendidos_por_data, name='tickets_atendidos_por_data')
+    path('home/technic/gen_report/', tickets_atendidos, name='tickets_atendidos'),
+    path('home/technic/gen_report2/', tickets_resolvidos, name='tickets_resolvidos'),
+    path('home/technic/gen_report3/', media_tempo_atendimento, name='media_tempo_atendimento'),
 ]
 

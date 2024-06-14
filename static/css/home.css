@@ -1,0 +1,40 @@
+body {
+            font-family: Arial, sans-serif; /* Define uma fonte simples e legível */
+            background-color: #f2f2f2; /* Cor de fundo para contraste */
+
+        }
+
+
+        .div{
+
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 80vh; /* Altura da viewport */
+            }
+
+
+        h1 {
+            font-size: 3em; /* Tamanho muito grande do título */
+            color: #333; /* Cor do título */
+            text-align: center; /* Centraliza o texto */
+            margin-bottom: 20px; /* Espaçamento abaixo do título */
+        }
+
+        p {
+            font-size: 1.5em; /* Tamanho grande do texto */
+            color: #666; /* Cor do texto */
+            text-align: center; /* Centraliza o texto */
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }

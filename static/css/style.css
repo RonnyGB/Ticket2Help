@@ -1,5 +1,7 @@
 /* ESTILOS PARA USO NA APLICAÇÃO */
-
+body{
+    font-family: Arial, sans-serif;
+}
 /* HEADERS */
 .header {
     display: flex;
@@ -22,6 +24,19 @@
     background-color: #777;
 }
 
+.button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #555;
+}
+
+
 /* TABLES */
 table {
     border-collapse: collapse;
@@ -34,4 +49,15 @@ th, td {
 }
 th {
     background-color: #f2f2f2;
+}
+
+
+footer {
+       position: fixed;
+       bottom: 0;
+       width: 100%;
+       background-color: #333;
+       color: white;
+       text-align: center;
+       padding: 10px 0;
 }

@@ -1,0 +1,58 @@
+body {
+            font-family: Arial, sans-serif; /* Define uma fonte simples e legível */
+            background-color: #f2f2f2; /* Cor de fundo para contraste */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Altura da viewport */
+        }
+
+        .login-container {
+
+            width: 500px; /* Largura da div de login */
+            padding: 20px;
+            background-color: #fff; /* Fundo branco */
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1); /* Sombra suave */
+            border-radius: 5px; /* Borda arredondada */
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 24px; /* Tamanho do título */
+            color: #333; /* Cor do título */
+            margin-bottom: 20px; /* Espaçamento abaixo do título */
+        }
+
+        form {
+            margin-top: 20px; /* Espaçamento acima do formulário */
+        }
+
+        button {
+            display: inline-block;
+            background-color: #007bff; /* Cor de fundo do botão */
+            color: white; /* Cor do texto do botão */
+            border: none; /* Remove a borda */
+            padding: 10px 20px; /* Padding interno */
+            text-align: center;
+            text-decoration: none; /* Remove sublinhado */
+            font-size: 16px;
+            cursor: pointer; /* Mostra cursor de clique */
+            border-radius: 5px; /* Borda arredondada */
+            transition: background-color 0.3s ease; /* Transição suave de cor de fundo */
+        }
+
+        button:hover {
+            background-color: #0056b3; /* Cor de fundo do botão ao passar o mouse */
+        }
+
+        footer {
+       position: fixed;
+       bottom: 0;
+       width: 100%;
+       background-color: #333;
+       color: white;
+       text-align: center;
+       padding: 10px 0;
+}

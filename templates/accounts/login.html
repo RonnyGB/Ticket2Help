@@ -3,13 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+        {% load static %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+
 </head>
 <body>
-    <h2>Login</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Login</button>
-    </form>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+      <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2024 - Ticket2Help - Ronald Diogo Ana, Inc.</p>
+    </footer>
+    <!-- FOOTER -->
 </body>
 </html>
