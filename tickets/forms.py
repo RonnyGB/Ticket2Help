@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from .models import HardwareTicket, SoftwareTicket, Ticket
 
 
 class RegisterForm(UserCreationForm):
@@ -11,3 +12,21 @@ class RegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'firstname', 'lastname', 'password1', 'password2']
+
+
+class TicketForm(forms.ModelForm):
+    class Meta:
+        model = Ticket
+        fields = ['estTicket', 'estAtendimento']
+
+
+class HardwareTicketForm(TicketForm):
+    class Meta(TicketForm.Meta):
+        model = HardwareTicket
+        fields = TicketForm.Meta.fields + ['equipamento', 'avaria', 'descRep', 'pecas']
+
+
+class SoftwareTicketForm(TicketForm):
+    class Meta(TicketForm.Meta):
+        model = SoftwareTicket
+        fields = TicketForm.Meta.fields + ['software', 'descNecessidade']

@@ -5,15 +5,53 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .ticket_helper import *
-from .forms import RegisterForm
+from .forms import RegisterForm, HardwareTicketForm, SoftwareTicketForm, TicketForm
 
 
 def index(request):
     return render(request, 'tickets/index.html')
 
 
-def list_tickets(request):
-    tickets = get_tickets
+@login_required
+def new_ticket(request):
+    ticket_type = request.POST.get('ticket_type')
+
+    if ticket_type == "hardware":
+        form_class = HardwareTicketForm
+    elif ticket_type == "software":
+        form_class = SoftwareTicketForm
+    else:
+        form_class = TicketForm
+
+    if request.method == 'POST':
+        form = form_class(request.POST)
+        if form.is_valid():
+            ticket = form.save(commit=False)
+            ticket.idColaborador = request.user
+            ticket.Tipo = ticket_type  # Set ticket type based on form submission
+            ticket.save()
+            return redirect('home')
+    else:
+        form = form_class()
+
+    hardware_form = HardwareTicketForm()
+    software_form = SoftwareTicketForm()
+    ticket_form = TicketForm()
+    return render(
+        request,
+        'home/client/new_ticket.html',
+        {
+            'form': form,
+            'ticket_type': ticket_type,
+            'hardware_form': hardware_form,
+            'software_form': software_form,
+            'ticket_form': ticket_form
+        }
+    )
+
+
+def list_tickets(request, tipo):
+    tickets = get_tickets(op=tipo)
     user = request.user
     if user.is_staff or user.has_perm('app_name.permission_codename'):
         return render(request, 'home/technic/list_tickets.html', {'tickets': tickets})

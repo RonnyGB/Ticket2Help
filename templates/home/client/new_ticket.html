@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Página de Criação de Tickets</title>
+{% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <!-- HEADER CLIENT -->
+    {% include '_header/client.html' %}
+    <!-- HEADER CLIENT -->
+
+    <!-- PAGE COMPONENTS -->
+    <h2>Create a New Ticket</h2>
+    <!-- Buttons to choose ticket type -->
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" name="ticket_type" value="hardware">Create Hardware Ticket</button>
+        <button type="submit" name="ticket_type" value="software">Create Software Ticket</button>
+    </form>
+
+    <hr>
+
+    <!-- Form section that changes based on the chosen ticket type -->
+    {% if ticket_type == "hardware" %}
+        <form method="post">
+            {% csrf_token %}
+            {{ hardware_form.as_p }} <!-- Render hardware ticket form fields -->
+            <input type="hidden" name="tipo" value="Hardware"> <!-- Hidden field to set ticket type -->
+            <hr>
+            <button type="submit">Create Hardware Ticket</button>
+        </form>
+    {% elif ticket_type == "software" %}
+        <form method="post">
+            {% csrf_token %}
+            {{ software_form.as_p }} <!-- Render software ticket form fields -->
+            <input type="hidden" name="tipo" value="Software"> <!-- Hidden field to set ticket type -->
+            <hr>
+            <button type="submit">Create Software Ticket</button>
+        </form>
+    {% else %}
+        <!-- Default form if no ticket type is chosen -->
+        <form method="post">
+            {% csrf_token %}
+            {{ ticket_form.as_p }} <!-- Render general ticket form fields -->
+            <input type="hidden" name="tipo" value="General"> <!-- Hidden field to set ticket type -->
+            <hr>
+            <button type="submit">Create General Ticket</button>
+        </form>
+    {% endif %}
+    <!-- PAGE COMPONENTS -->
+
+    <!-- FOOTER -->
+    <div>
+        <footer>
+          <p>&copy 2024 - Ticket2Help - Ronald Diogo Ana, Inc.</p>
+        </footer>
+    </div>
+    <!-- FOOTER -->
+</body>
+</html>

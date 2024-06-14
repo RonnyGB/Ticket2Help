@@ -17,7 +17,6 @@ def create_ticket(ticket):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    ticket = listToObj(ticket)
     # Inserir dados na tabela Tickets (comuns a todos os tipos de tickets)
     query = """
          INSERT INTO tickets (id, dtCriacao, dtUltimaAlt, colaboradorAlt ,idColaborador, estTicket, estAtendimento, 
@@ -25,8 +24,8 @@ def create_ticket(ticket):
          VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
          """
     cursor.execute(query, (
-        str(ticket.id), ticket.dtCriacao, ticket.dtUltimaAlt, ticket.ColaboradorAlt, ticket.idColaborador,
-        ticket.estTicket, ticket.estAtendimento, ticket.Tipo))
+        str(ticket.id), ticket.dtCriacao, ticket.dtUltimaAlt, ticket.colaboradorAlt, ticket.idColaborador,
+        ticket.estTicket, ticket.estAtendimento, ticket.tipo))
 
     if isinstance(ticket, HardwareTicket):
         query = """
@@ -34,7 +33,7 @@ def create_ticket(ticket):
             VALUES (%s, %s, %s, %s, %s, %s)
             """
         cursor.execute(query, (
-            str(ticket.idHard), ticket.Equipamento, ticket.Avaria, ticket.DescRep, ticket.Pecas, str(ticket.id)))
+            str(ticket.idHard), ticket.equipamento, ticket.avaria, ticket.descRep, ticket.pecas, str(ticket.id)))
 
     elif isinstance(ticket, SoftwareTicket):
         query = """
@@ -42,7 +41,7 @@ def create_ticket(ticket):
             VALUES (%s, %s, %s, %s)
             """
         cursor.execute(query, (
-            str(ticket.idSoft), ticket.Software, ticket.DescNecessidade, str(ticket.id)))
+            str(ticket.idSoft), ticket.software, ticket.descNecessidade, str(ticket.id)))
     else:
         raise ValueError("Tipo de ticket não suportado")
 
@@ -169,7 +168,7 @@ def update_ticket(ticket):
         WHERE id=%s
     """
     cursor.execute(query, (
-        datetime.now(), ticket.ColaboradorAlt, ticket.estTicket, ticket.estAtendimento, str(ticket.id)
+        datetime.now(), ticket.colaboradorAlt, ticket.estTicket, ticket.estAtendimento, str(ticket.id)
     ))
 
     if isinstance(ticket, HardwareTicket):
@@ -178,7 +177,7 @@ def update_ticket(ticket):
             WHERE ticketID=%s
         """
         cursor.execute(query, (
-            ticket.Equipamento, ticket.Avaria, ticket.DescRep, ticket.Pecas, str(ticket.id))
+            ticket.equipamento, ticket.avaria, ticket.descRep, ticket.pecas, str(ticket.id))
         )
 
     elif isinstance(ticket, SoftwareTicket):
@@ -187,7 +186,7 @@ def update_ticket(ticket):
             WHERE ticketID=%s
         """
         cursor.execute(query, (
-            ticket.Software, ticket.DescNecessidade, ticket.DescInt, str(ticket.id)
+            ticket.software, ticket.descNecessidade, ticket.descInt, str(ticket.id)
         ))
 
     else:

@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Ticket2Help_P4'
+    'tickets',
 ]
 
 MIDDLEWARE = [
