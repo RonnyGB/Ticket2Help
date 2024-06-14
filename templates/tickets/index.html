@@ -3,18 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Ticket2Help</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
 </head>
 <body>
-    <h1>Bem Vindo ao Ticket2Help</h1>
+    <div class="login-container">
+        <h1>Bem Vindo ao Ticket2Help</h1>
 
-    <a href="{% url 'register' %}">Register</a> |
-    <a href="{% url 'login' %}">Login</a>
-    <!-- FOOTER -->
-    <div>
-        <footer>
-          <p>&copy 2024 - Ticket2Help - Ronald Diogo Ana, Inc.</p>
-        </footer>
+        <a href="{% url 'register' %}">Register</a> |
+        <a href="{% url 'login' %}">Login</a>
     </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2024 - Ticket2Help - Ronald Diogo Ana, Inc.</p>
+    </footer>
     <!-- FOOTER -->
 </body>
 </html>

@@ -1,34 +1,32 @@
-<!-- ticket_types_chart.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Gráfico de Tickets Atendidos</title>
+    <title>Média de Tempo de Atendimento</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-    {% load static %}
-
 
 </head>
 <body>
     <!-- HEADER TEHCNIC -->
     {% include '_header/technic.html' %}
     <!-- HEADER TECHNIC -->
-    <h1 align="center">Gráfico de Tickets Atendidos</h1>
+    <h1 align="center">Média de Tempo de Atendimento</h1>
 
     <div align="center">
-        <img src="data:image/png;base64,{{ grafico_data }}" alt="Gráfico de Tickets Atendidos">
+        <img src="data:image/png;base64,{{ grafico_data }}" alt="Gráfico de Tickets Resolvidos">
     </div>
 
     <div align="center">
-        <a href="{% url 'tickets_atendidos' %}">
+       <a href="{% url 'tickets_atendidos' %}">
             <button class="button">Gerar Gráfico de Tickets Atendidos</button>
         </a>
         <a href="{% url 'tickets_resolvidos' %}">
             <button class="button">Gerar Gráfico de Tickets Atendidos</button>
         </a>
-
-
+        <a href="{% url 'media_tempo_atendimento' %}">
+            <button class="button">Gerar Gráfico de Tickets Atendidos</button>
+        </a>
     </div>
 </body>
 </html>

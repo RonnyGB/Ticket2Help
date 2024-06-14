@@ -1,23 +1,20 @@
-<!-- ticket_types_chart.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Gráfico de Tickets Atendidos</title>
+    <title>Gráfico de Tickets Resolvidos</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-    {% load static %}
-
 
 </head>
 <body>
     <!-- HEADER TEHCNIC -->
     {% include '_header/technic.html' %}
     <!-- HEADER TECHNIC -->
-    <h1 align="center">Gráfico de Tickets Atendidos</h1>
+    <h1 align="center">Gráfico de Tickets Resolvidos</h1>
 
     <div align="center">
-        <img src="data:image/png;base64,{{ grafico_data }}" alt="Gráfico de Tickets Atendidos">
+        <img src="data:image/png;base64,{{ grafico_data }}" alt="Gráfico de Tickets Resolvidos">
     </div>
 
     <div align="center">
@@ -25,9 +22,8 @@
             <button class="button">Gerar Gráfico de Tickets Atendidos</button>
         </a>
         <a href="{% url 'tickets_resolvidos' %}">
-            <button class="button">Gerar Gráfico de Tickets Atendidos</button>
+            <button class="button">Gerar Gráfico de Tickets Resolvidos</button>
         </a>
-
 
     </div>
 </body>

@@ -3,21 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Formulário de Registo</title>
+    {% load static %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/register.css' %}">
 </head>
 <body>
-    <h2>Register</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Register</button>
-    </form>
-
-    <!-- FOOTER -->
-    <div>
-        <footer>
-          <p>&copy 2024 - Ticket2Help - Ronald Diogo Ana, Inc.</p>
-        </footer>
+    <div class="login-container">
+        <h2>Register</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Register</button>
+        </form>
     </div>
+    <!-- FOOTER -->
+
+        <footer>
+          <p>&copy; 2024 - Ticket2Help - Ronald Diogo Ana, Inc.</p>
+        </footer>
+
     <!-- FOOTER -->
 </body>
 </html>
