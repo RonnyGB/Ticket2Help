@@ -34,6 +34,7 @@ html_static_path = ['_static']
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../../'))  # Ajuste o caminho conforme necessário
+sys.path.insert(1, os.path.abspath('../../tickets'))  # Adicione o diretório do aplicativo tickets
 os.environ['DJANGO_SETTINGS_MODULE'] = 'Ticket2Help_P4.settings'
 import django
 django.setup()

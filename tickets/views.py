@@ -1,9 +1,12 @@
 # views.py
 from django.contrib import messages
+from datetime import timedelta
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Count
+from django.db.models import Count, ExpressionWrapper
+from django.db.models.functions import Coalesce
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .ticket_helper import *
@@ -14,6 +17,7 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
 from .models import Ticket
+import pandas as pd
 
 
 def index(request):
@@ -201,37 +205,35 @@ def home(request):
         return render(request, 'home/client.html')
 
 
-def tickets_atendidos_por_data(request):
-    # Exemplo de intervalo de datas (substitua com seus dados reais)
+def tickets_atendidos(request):
+    # Lógica para calcular os dados e gerar o gráfico de Tickets Atendidos
+    # Exemplo básico:
     data_inicio = '2024-01-01'
     data_fim = '2024-06-30'
 
-    # Consulta para obter o número de tickets atendidos no intervalo de datas
     tickets_atendidos = Ticket.objects.filter(
         dtCriacao__range=[data_inicio, data_fim],
         estAtendimento='Atendido'
     ).count()
 
-    # Consulta para obter o número total de tickets no intervalo de datas
     total_tickets = Ticket.objects.filter(
         dtCriacao__range=[data_inicio, data_fim]
     ).count()
 
-    # Calcular percentual de tickets atendidos
     if total_tickets > 0:
         percentual_atendidos = (tickets_atendidos / total_tickets) * 100
     else:
         percentual_atendidos = 0
 
-    # Criar gráfico de pizza
+    # Criação do gráfico
     labels = ['Atendidos', 'Não Atendidos']
     sizes = [percentual_atendidos, 100 - percentual_atendidos]
 
     fig, ax = plt.subplots()
     ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
-    ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+    ax.axis('equal')
 
-    # Salvar gráfico como imagem base64 para exibir na template
+    # Convertendo o gráfico para uma imagem base64
     buffer = BytesIO()
     plt.savefig(buffer, format='png')
     buffer.seek(0)
@@ -240,3 +242,58 @@ def tickets_atendidos_por_data(request):
 
     context = {'grafico_data': grafico_data}
     return render(request, 'home/technic/gen_report.html', context)
+
+
+def tickets_resolvidos(request):
+    # Lógica para calcular os dados e gerar o gráfico de Tickets Resolvidos
+    tickets_resolvidos = Ticket.objects.filter(estTicket='Resolvido').count()
+    total_tickets = Ticket.objects.count()
+
+    if total_tickets > 0:
+        percentual_resolvidos = (tickets_resolvidos / total_tickets) * 100
+    else:
+        percentual_resolvidos = 0
+
+    # Criação do gráfico
+    labels = ['Resolvidos', 'Não Resolvidos']
+    sizes = [percentual_resolvidos, 100 - percentual_resolvidos]
+
+    fig, ax = plt.subplots()
+    ax.bar(labels, sizes, color=['green', 'red'])
+    ax.set_ylabel('Percentual (%)')
+
+    # Convertendo o gráfico para uma imagem base64
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    grafico_data = base64.b64encode(buffer.getvalue()).decode()
+    plt.close()
+
+    context = {'grafico_data': grafico_data}
+    return render(request, 'home/technic/gen_report2.html', context)
+
+
+def media_tempo_atendimento(request):
+    tickets = Ticket.objects.all()
+
+    total_tickets = 0
+    total_tempo_atendimento = timedelta()
+
+    for ticket in tickets:
+        if ticket.dtCriacao and ticket.dtUltimaAlt:
+            tempo_atendimento = ticket.dtUltimaAlt - ticket.dtCriacao
+            total_tempo_atendimento += tempo_atendimento
+            total_tickets += 1
+
+    # Calculando a média de tempo de atendimento em minutos
+    if total_tickets > 0:
+        media_tempo_atendimento = total_tempo_atendimento.total_seconds() / 60 / total_tickets
+    else:
+        media_tempo_atendimento = 0
+
+    context = {
+        'media_tempo_atendimento': media_tempo_atendimento,
+        # Outros dados que você deseja passar para o template
+    }
+
+    return render(request, 'home/technic/gen_report3.html', context)
