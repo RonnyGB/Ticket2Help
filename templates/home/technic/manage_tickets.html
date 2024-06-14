@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Lista de Tickets</title>
+    <title>Manage Tickets</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <!-- HEADER CLIENT -->
+    <!-- HEADER TECHNIC -->
     {% include '_header/technic.html' %}
-    <!-- HEADER CLIENT -->
+    <!-- HEADER TECHNIC -->
 
-    <h1>Ticket List</h1>
+    <h1>Manage Tickets</h1>
 
     <!-- Filter buttons -->
     <div>
@@ -28,7 +28,7 @@
                 <th>Ticket State</th>
                 <th>Service State</th>
                 <th>Last Update</th>
-                <th>Details</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -40,7 +40,13 @@
                     <td>{{ ticket.estTicket }}</td>
                     <td>{{ ticket.estAtendimento }}</td>
                     <td>{{ ticket.dtUltimaAlt }}</td>
-                    <td><a href="{% url 'ticket_details' ticket.id %}">Details</a></td>
+                    <td>
+                        {% if ticket.estAtendimento == 'resolvido' %}
+                            <a href="{% url 'ticket_details_technic' ticket.id %}">Details</a>
+                        {% else %}
+                            <a href="{% url 'edit_ticket' ticket.id %}">Edit</a>
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

@@ -23,10 +23,22 @@ class TicketForm(forms.ModelForm):
 class HardwareTicketForm(TicketForm):
     class Meta(TicketForm.Meta):
         model = HardwareTicket
-        fields = TicketForm.Meta.fields + ['equipamento', 'avaria', 'descRep', 'pecas']
+        fields = TicketForm.Meta.fields + ['equipamento', 'avaria']
 
 
 class SoftwareTicketForm(TicketForm):
     class Meta(TicketForm.Meta):
         model = SoftwareTicket
         fields = TicketForm.Meta.fields + ['software', 'descNecessidade']
+
+
+class HardwareTicketEditForm(forms.ModelForm):
+    class Meta:
+        model = HardwareTicket
+        fields = ['estTicket', 'estAtendimento', 'descRep', 'pecas']
+
+
+class SoftwareTicketEditForm(forms.ModelForm):
+    class Meta:
+        model = SoftwareTicket
+        fields = ['estTicket', 'estAtendimento', 'descInt']

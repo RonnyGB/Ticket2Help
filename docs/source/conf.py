@@ -13,7 +13,11 @@ author = 'ANA SILVA, RONALD COSTA, DIOGO REGADAS'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.viewcode',
+]
 
 templates_path = ['_templates']
 exclude_patterns = []
@@ -33,4 +37,3 @@ sys.path.insert(0, os.path.abspath('../../'))  # Ajuste o caminho conforme neces
 os.environ['DJANGO_SETTINGS_MODULE'] = 'Ticket2Help_P4.settings'
 import django
 django.setup()
-
