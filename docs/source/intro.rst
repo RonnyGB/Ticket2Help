@@ -1,4 +1,4 @@
-Introduction
+Introdução
 ============
 
 Bem-vindo à documentação do TICKET2HELP. Este documento fornece uma visão geral do projeto e suas funcionalidades principais.
