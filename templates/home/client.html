@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage Para o Cliente</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <!-- HEADER CLIENT -->
+    {% include '_header/client.html' %}
+    <!-- HEADER CLIENT -->
+
+    <!-- PAGE COMPONENTS -->
+    <h1>Welcome, user!</h1>
+    <p>You have access to general content.</p>
+    <!-- PAGE COMPONENTS -->
+
+    <!-- FOOTER -->
+    <div>
+        <footer>
+          <p>&copy 2024 - Ticket2Help - Ronald Diogo Ana, Inc.</p>
+        </footer>
+    </div>
+    <!-- FOOTER -->
+</body>
+</html>
