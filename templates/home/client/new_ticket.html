@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Página de Criação de Tickets</title>
-{% load static %}
+    {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
 <body>
@@ -29,7 +29,7 @@
             {{ hardware_form.as_p }} <!-- Render hardware ticket form fields -->
             <input type="hidden" name="tipo" value="Hardware"> <!-- Hidden field to set ticket type -->
             <hr>
-            <button type="submit">Create Hardware Ticket</button>
+            <button type="submit">Submit</button>
         </form>
     {% elif ticket_type == "software" %}
         <form method="post">
@@ -37,16 +37,7 @@
             {{ software_form.as_p }} <!-- Render software ticket form fields -->
             <input type="hidden" name="tipo" value="Software"> <!-- Hidden field to set ticket type -->
             <hr>
-            <button type="submit">Create Software Ticket</button>
-        </form>
-    {% else %}
-        <!-- Default form if no ticket type is chosen -->
-        <form method="post">
-            {% csrf_token %}
-            {{ ticket_form.as_p }} <!-- Render general ticket form fields -->
-            <input type="hidden" name="tipo" value="General"> <!-- Hidden field to set ticket type -->
-            <hr>
-            <button type="submit">Create General Ticket</button>
+            <button type="submit">Submit</button>
         </form>
     {% endif %}
     <!-- PAGE COMPONENTS -->

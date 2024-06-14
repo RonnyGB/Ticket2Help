@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ticket Details</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <!-- HEADER CLIENT -->
+    {% include '_header/client.html' %}
+    <!-- HEADER CLIENT -->
+
+    <h1>Ticket Details</h1>
+
+    <h2>{{ ticket }}</h2>
+    <p>Date Created: {{ ticket.dtCriacao }}</p>
+    <p>Last Update: {{ ticket.dtUltimaAlt }}</p>
+    <p>Submitted By: {{ ticket.idColaborador }}</p>
+    <p>Ticket State: {{ ticket.estTicket }}</p>
+    <p>Service State: {{ ticket.estAtendimento }}</p>
+
+    {% if ticket_type == 'hardware' %}
+        <p>Equipment: {{ ticket.equipamento }}</p>
+        <p>Issue: {{ ticket.avaria }}</p>
+        <p>Repair Description: {{ ticket.descRep }}</p>
+        <p>Parts: {{ ticket.pecas }}</p>
+    {% elif ticket_type == 'software' %}
+        <p>Software: {{ ticket.software }}</p>
+        <p>Need Description: {{ ticket.descNecessidade }}</p>
+        <p>Intervention Description: {{ ticket.descInt }}</p>
+    {% endif %}
+
+    <!-- FOOTER -->
+    <div>
+        <footer>
+          <p>&copy 2024 - Ticket2Help - Ronald Diogo Ana, Inc.</p>
+        </footer>
+    </div>
+    <!-- FOOTER -->
+</body>
+</html>
