@@ -4,7 +4,9 @@
             <button>Home</button>
         </a>
         <button>Button 2</button>
-        <button>Button 3</button>
+        <a href="{% url 'list_tickets' %}">
+            <button>List Tickets</button>
+        </a>
         <button>Button 4</button>
         <form action="{% url 'logout' %}" method="post" style="display: inline;">
             {% csrf_token %}
