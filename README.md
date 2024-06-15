@@ -26,9 +26,9 @@ Ticket2Help é um sistema de gestão de tickets desenvolvido em Django.
 
 2. Crie e ative um ambiente virtual:
    ```sh
-   python -m venv env
+   python -m venv .venv
    .\env\Scripts\activate  # Windows
-   source env/bin/activate  # macOS/Linux
+   source .venv/bin/activate  # macOS/Linux
    ```
 
 3. Instale as dependências:
@@ -38,12 +38,17 @@ Ticket2Help é um sistema de gestão de tickets desenvolvido em Django.
 
 4. Configure o banco de dados no arquivo `Ticket2Help_P4/settings.py`.
 
-5. Execute as migrações:
+5. Crie as migrações:
+   ```sh
+   python manage.py makemigrations 'app_name'
+   ```
+   
+6. Execute as migrações:
    ```sh
    python manage.py migrate
    ```
 
-6. Inicie o servidor de desenvolvimento:
+7. Inicie o servidor de desenvolvimento:
    ```sh
    python manage.py runserver
    ```
